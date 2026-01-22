@@ -1,15 +1,21 @@
-/* Component-level styles for the UI package */
-@import "tailwindcss" prefix(ui);
-@import "@repo/tailwind-config";
+@import "@repo/tailwind-config" prefix(ui);
 
 .base-style {
-  @apply ui:inline-flex ui:items-center ui:justify-center ui:rounded-lg ui:px-7 ui:py-2.5 ui:font-normal ui:transition-colors ui:focus-visible:outline-hidden ui:disabled:pointer-events-none ui:disabled:opacity-50 ui:cursor-pointer ui:text-sm;
+  @apply ui:inline-flex ui:items-center ui:justify-center ui:rounded-lg ui:px-7 ui:py-2.5 ui:font-normal ui:transition-colors ui:focus-visible:outline-hidden ui:disabled:pointer-events-none ui:disabled:opacity-40 ui:cursor-pointer ui:text-sm;
 }
 
 .contained {
-  @apply ui:bg-brand ui:text-brand-foreground ui:hover:opacity-90 ui:active:opacity-100 ui:transition-all ui:duration-300;
+  @apply ui:bg-brand ui:text-brand-foreground ui:hover:bg-outline-hover ui:active:bg-outline-active ui:transition-all ui:duration-300;
 }
 
 .outline {
-  @apply ui:border-[0.5px] ui:border-solid ui:border-border ui:bg-transparent ui:text-text-primary ui:hover:border-border/90 ui:hover:text-text-primary/90 ui:hover:opacity-90 ui:active:opacity-100 ui:transition-all ui:duration-300;
+  @apply ui:border-[0.5px] ui:border-solid ui:border-dim-gray ui:bg-transparent ui:text-text-primary ui:hover:bg-brand/10 ui:active:bg-brand/20 ui:transition-all ui:duration-300;
+}
+
+.text {
+  @apply ui:text-text-primary ui:hover:bg-brand/10 ui:active:bg-brand/20 ui:transition-all ui:duration-300;
+}
+
+.icon-button-base {
+  @apply ui:inline-flex ui:items-center ui:justify-center ui:rounded-lg ui:transition-colors ui:focus-visible:outline-hidden ui:disabled:pointer-events-none ui:disabled:opacity-50 ui:cursor-pointer ui:aspect-square ui:px-2 ui:py-2;
 }

@@ -27,17 +27,19 @@
   /* --- PALETTE: SEMANTIC ALIASES --- */
   
   /* Brand mappings (Mapped to Night/White-Smoke for monochrome look) */
-  --color-brand: var(--color-night);
-  --color-brand-foreground: var(--color-white-smoke);
+  --color-brand: #131313;
+  --color-outline-hover: #3C3C3C;
+  --color-outline-active: #646464;
+  --color-brand-foreground: #F3F3F3;
 
   /* Defaults (Light Mode) */
-  --color-background: var(--color-white-smoke);  
-  --color-surface: var(--color-white);           
-  --color-border: var(--color-tuatara-200);      
+  --color-background: #F3F3F3;  
+  --color-surface: #ffffff;           
+  --color-border: #d1d1d1;      
   
-  --color-text-primary: var(--color-night);      
-  --color-text-secondary: var(--color-onyx);     
-  --color-text-muted: var(--color-dim-gray);     
+  --color-text-primary: #131313;      
+  --color-text-secondary: #3C3C3C;     
+  --color-text-muted: #646464;     
 
   /* --- TYPOGRAPHY --- */
   --text-h1: clamp(2.5rem, 5vw + 1rem, 4.5rem);
@@ -65,22 +67,24 @@
   /* 🌙 DARK MODE MAPPING */
   .dark {
     /* Background becomes Night */
-    --color-background: var(--color-night);
+    --color-background: #131313;
     
     /* Surface becomes Tuatara 950 */
-    --color-surface: var(--color-tuatara-950);
+    --color-surface: #262626;
     
     /* Borders become Tuatara 800 */
-    --color-border: var(--color-tuatara-800);
+    --color-border: #454545;
     
     /* Text flips */
-    --color-text-primary: var(--color-white-smoke);
-    --color-text-secondary: var(--color-silver);
-    --color-text-muted: var(--color-tuatara-400);
+    --color-text-primary: #F3F3F3;
+    --color-text-secondary: #B5B5B5;
+    --color-text-muted: #888888;
 
     /* Brand in dark mode (Optional: Keep same or invert) */
-    --color-brand: var(--color-white-smoke);
-    --color-brand-foreground: var(--color-night);
+    --color-brand: #F3F3F3;
+    --color-outline-hover: #B5B5B5;
+    --color-outline-active: #888888;
+    --color-brand-foreground: #131313;
   }
 
   body {

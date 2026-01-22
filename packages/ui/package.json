@@ -10,7 +10,8 @@
   "exports": {
     "./styles.css": "./dist/index.css",
     "./*": "./dist/*.js",
-    "./button": "./src/button.tsx"
+    "./button": "./src/button.tsx",
+    "./icon-button": "./src/icon-button.tsx"
   },
   "license": "MIT",
   "scripts": {
@@ -36,6 +37,7 @@
   },
   "dependencies": {
     "clsx": "^2.1.1",
+    "lucide-react": "^0.562.0",
     "tailwind-merge": "^3.4.0"
   }
 }

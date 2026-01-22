@@ -1,26 +1,25 @@
 "use client";
 
-import { ReactNode } from "react";
+import { LucideIcon } from "lucide-react";
 import { cn } from "./lib/utils";
 import "./styles.css";
-import { twMerge } from "tailwind-merge";
 
-interface ButtonProps {
-  children: ReactNode;
+interface IconButtonProps {
+  icon: LucideIcon;
   className?: string;
   variant?: "outline" | "contained" | "text";
   disabled?: boolean;
   onClick?: () => void;
 }
 
-export const Button = ({
-  children,
+export const IconButton = ({
+  icon: Icon,
   className,
   variant = "contained",
   disabled = false,
   onClick,
-}: ButtonProps) => {
-  const baseStyles = "base-style";
+}: IconButtonProps) => {
+  const baseStyles = "icon-button-base";
 
   const variants = {
     outline: "outline",
@@ -30,11 +29,11 @@ export const Button = ({
 
   return (
     <button
-      className={twMerge(cn(baseStyles, variants[variant], className))}
+      className={cn(baseStyles, variants[variant], className)}
       onClick={onClick}
       disabled={disabled}
     >
-      {children}
+      <Icon strokeWidth={1.5} size={16}/>
     </button>
   );
 };
