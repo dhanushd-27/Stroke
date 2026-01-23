@@ -4,7 +4,7 @@ import React from "react";
 import Header from "../components/header";
 import Footer from "../components/footer";
 import Container from "@repo/ui/container";
-import CircleCanvas from "../components/circle-canvas";
+import CircleCanvas from "../components/canvas/circle-canvas";
 
 export default function Home() {
   return (

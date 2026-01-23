@@ -1,7 +1,8 @@
 "use client";
 
-import { useCircleCanvas } from "../hooks/use-circle-canvas";
+import { useCircleCanvas } from "../../hooks/use-circle-canvas";
 import { PrecisionIndicator } from "./precision-indicator";
+import { ShareActions } from "./share-actions";
 import { DrawingCanvas } from "./drawing-canvas";
 
 export default function CircleCanvas() {
@@ -37,6 +38,10 @@ export default function CircleCanvas() {
           onPointerUp={stopDrawing}
           onPointerLeave={stopDrawing}
         />
+      </div>
+
+      <div className="h-10 flex items-center justify-center">
+        {status === "finished" && <ShareActions score={score} />}
       </div>
     </div>
   );

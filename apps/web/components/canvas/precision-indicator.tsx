@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@repo/ui/utils";
-import { type GameStatus } from "../hooks/use-circle-canvas";
+import { type GameStatus } from "../../hooks/use-circle-canvas";
 
 interface PrecisionIndicatorProps {
   score: number | null;

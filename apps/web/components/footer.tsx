@@ -13,7 +13,11 @@ export default function Footer() {
           Neal.fun
         </AppLink>
       </p>
-      <p>Built by - Dhanush</p>
+      <p>Built by -{' '}
+        <AppLink href="https://x.com/orcatwt" as={Link}>
+          Dhanush
+        </AppLink>
+      </p>
     </footer>
   )
 }
