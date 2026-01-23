@@ -1,58 +1,56 @@
-# Turborepo Tailwind CSS starter
+# Stroke 🎨
 
-This Turborepo starter is maintained by the Turborepo core team.
+**Stroke** is a minimal, beautifully designed drawing game where you challenge yourself to draw a perfect circle. Test your precision and share your score with the world!
 
-## Using this example
+Built with love by **[Dhanush](https://github.com/dhanushd-27)**.
 
-Run the following command:
+## ✨ Features
 
-```sh
-npx create-turbo@latest -e with-tailwind
-```
+- **Precision Tracking**: Real-time feedback on your drawing accuracy.
+- **Score Calculation**: Get a percentage score based on how close you are to a perfect circle.
+- **Share your results**: Easily share your performance on Twitter or copy it to your clipboard.
+- **Minimalist UI**: A clean, premium design focused on the drawing experience.
 
-## What's inside?
+## 🛠 Tech Stack
 
-This Turborepo includes the following packages/apps:
+- **Framework**: [Next.js 15](https://nextjs.org/) (App Router)
+- **Library**: [React 19](https://react.dev/)
+- **Styling**: [Tailwind CSS 4](https://tailwindcss.com/)
+- **Monorepo**: [Turborepo](https://turbo.build/)
+- **Runtime**: [Bun](https://bun.sh/)
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **Components**: Custom UI components in `packages/ui`
 
-### Apps and Packages
+## 🚀 Future Plans
 
-- `docs`: a [Next.js](https://nextjs.org/) app with [Tailwind CSS](https://tailwindcss.com/)
-- `web`: another [Next.js](https://nextjs.org/) app with [Tailwind CSS](https://tailwindcss.com/)
-- `ui`: a stub React component library with [Tailwind CSS](https://tailwindcss.com/) shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+- [ ] **Leaderboard**: Compete with friends and the global community.
+- [ ] **Authentication**: Save your high scores and track your progress over time.
+- [ ] **Global Gallery**: Showcase the most perfect (and imperfect) circles drawn by users.
+- [ ] **Multi-Shape Challenges**: Beyond circles—draw perfect squares, triangles, and more!
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+## 📦 Getting Started
 
-### Building packages/ui
+### Prerequisites
 
-This example is set up to produce compiled styles for `ui` components into the `dist` directory. The component `.tsx` files are consumed by the Next.js apps directly using `transpilePackages` in `next.config.ts`. This was chosen for several reasons:
+- [Bun](https://bun.sh/) installed on your machine.
 
-- Make sharing one `tailwind.config.ts` to apps and packages as easy as possible.
-- Make package compilation simple by only depending on the Next.js Compiler and `tailwindcss`.
-- Ensure Tailwind classes do not overwrite each other. The `ui` package uses a `ui-` prefix for it's classes.
-- Maintain clear package export boundaries.
+### Installation
 
-Another option is to consume `packages/ui` directly from source without building. If using this option, you will need to update the `tailwind.config.ts` in your apps to be aware of your package locations, so it can find all usages of the `tailwindcss` class names for CSS compilation.
+1. Clone the repository:
 
-For example, in [tailwind.config.ts](packages/tailwind-config/tailwind.config.ts):
+   ```sh
+   git clone https://github.com/dhanushd-27/Stroke.git
+   ```
 
-```js
-  content: [
-    // app content
-    `src/**/*.{js,ts,jsx,tsx}`,
-    // include packages if not transpiling
-    "../../packages/ui/*.{js,ts,jsx,tsx}",
-  ],
-```
+2. Install dependencies:
 
-If you choose this strategy, you can remove the `tailwindcss` and `autoprefixer` dependencies from the `ui` package.
+   ```sh
+   bun install
+   ```
 
-### Utilities
+3. Start the development server:
+   ```sh
+   bun run dev
+   ```
 
-This Turborepo has some additional tools already setup for you:
-
-- [Tailwind CSS](https://tailwindcss.com/) for styles
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+Open [http://localhost:3001](http://localhost:3001) to see the result.
