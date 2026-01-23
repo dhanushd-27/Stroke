@@ -26,7 +26,7 @@ export function PrecisionIndicator({
 
   if (status === "idle") {
     return (
-      <div className={cn("text-xs font-medium text-text-muted", className)}>
+      <div className={cn("text-xs font-medium text-text-primary", className)}>
         Try to draw a perfect circle
       </div>
     );
