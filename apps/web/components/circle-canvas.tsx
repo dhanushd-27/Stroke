@@ -10,6 +10,7 @@ export default function CircleCanvas() {
     containerRef,
     score,
     status,
+    isTooClose,
     startDrawing,
     stopDrawing,
     handlePointerMove,
@@ -17,7 +18,13 @@ export default function CircleCanvas() {
 
   return (
     <div className="flex flex-col items-center gap-4 w-full">
-      <PrecisionIndicator score={score} status={status} />
+      <div className="h-6 flex items-center justify-center">
+        <PrecisionIndicator
+          score={score}
+          status={status}
+          isTooClose={isTooClose}
+        />
+      </div>
 
       <div
         ref={containerRef}

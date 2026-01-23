@@ -13,7 +13,8 @@
     "./button": "./src/button.tsx",
     "./icon-button": "./src/icon-button.tsx",
     "./link": "./src/link.tsx",
-    "./container": "./src/container.tsx"
+    "./container": "./src/container.tsx",
+    "./utils": "./src/lib/utils.ts"
   },
   "license": "MIT",
   "scripts": {

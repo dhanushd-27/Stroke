@@ -6,14 +6,24 @@ import { type GameStatus } from "../hooks/use-circle-canvas";
 interface PrecisionIndicatorProps {
   score: number | null;
   status: GameStatus;
+  isTooClose?: boolean;
   className?: string;
 }
 
 export function PrecisionIndicator({
   score,
   status,
+  isTooClose,
   className,
 }: PrecisionIndicatorProps) {
+  if (isTooClose && status !== "drawing" && status !== "finished") {
+    return (
+      <div className={cn("text-xs font-medium text-error", className)}>
+        You are too close to the center
+      </div>
+    );
+  }
+
   if (status === "idle") {
     return (
       <div className={cn("text-xs font-medium text-text-muted", className)}>
