@@ -19,3 +19,7 @@
 .icon-button-base {
   @apply inline-flex items-center justify-center rounded-lg transition-colors focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-50 cursor-pointer aspect-square px-2 py-2;
 }
+
+.link {
+  @apply text-text-primary hover:text-outline-hover active:bg-outline-active transition-all duration-300 text-xs md:text-sm tracking-wide underline;
+}

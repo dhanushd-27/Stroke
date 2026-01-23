@@ -11,7 +11,9 @@
     "./styles.css": "./dist/index.css",
     "./*": "./dist/*.js",
     "./button": "./src/button.tsx",
-    "./icon-button": "./src/icon-button.tsx"
+    "./icon-button": "./src/icon-button.tsx",
+    "./link": "./src/link.tsx",
+    "./container": "./src/container.tsx"
   },
   "license": "MIT",
   "scripts": {

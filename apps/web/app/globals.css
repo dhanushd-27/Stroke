@@ -1,4 +1,6 @@
 @import "tailwindcss";
 @import "@repo/tailwind-config";
 
+@source "../../../packages/ui/src/**/*.{ts,tsx}";
+
 @custom-variant dark (&:where(.dark, .dark *));

@@ -1,15 +1,18 @@
 "use client";
 
-import { Button } from "@repo/ui/button";
-
 import React from "react";
-import { ThemeToggler } from "../components/theme-toggler";
+import Header from "../components/header";
+import Footer from "../components/footer";
+import Container from "@repo/ui/container";
 
 export default function Home() {
   return (
-    <div className="">
-      <Button>Button</Button>
-      <ThemeToggler />
-    </div>
+    <Container>
+      <Header />
+      <div className="flex-1 flex items-center justify-center">
+        <h1>Home</h1>
+      </div>
+      <Footer />
+    </Container>
   );
 }
