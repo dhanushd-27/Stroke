@@ -125,18 +125,11 @@ export function useCircleCanvas() {
         const distToStart = startPoint
           ? getDistance(lastPoint, startPoint)
           : Infinity;
-        const currentAngle = getAngle(lastPoint, center);
-        const angleDiff = getAngleDiff(currentAngle, startAngle);
 
-        if (distToStart < 20 || angleDiff < 0.15) {
-          setCompletionStatus("success");
-          if (startPoint && distToStart < 55) {
-            setPoints((prev) => [...prev, startPoint]);
-          }
-        } else if (angleDiff < 0.3) {
-          setCompletionStatus("close");
-        } else {
-          setCompletionStatus("incomplete");
+        // If threshold points reached, it's a success on release
+        setCompletionStatus("success");
+        if (startPoint && distToStart < 55) {
+          setPoints((prev) => [...prev, startPoint]);
         }
       }
     } else {
