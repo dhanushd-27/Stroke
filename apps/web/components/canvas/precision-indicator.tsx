@@ -1,11 +1,15 @@
 "use client";
 
 import { cn } from "@repo/ui/utils";
-import { type GameStatus } from "../../hooks/use-circle-canvas";
+import {
+  type CompletionStatus,
+  type GameStatus,
+} from "../../hooks/use-circle-canvas";
 
 interface PrecisionIndicatorProps {
   score: number | null;
   status: GameStatus;
+  completionStatus?: CompletionStatus;
   isTooClose?: boolean;
   className?: string;
 }
@@ -13,6 +17,7 @@ interface PrecisionIndicatorProps {
 export function PrecisionIndicator({
   score,
   status,
+  completionStatus,
   isTooClose,
   className,
 }: PrecisionIndicatorProps) {
@@ -30,6 +35,23 @@ export function PrecisionIndicator({
         Try to draw a perfect circle
       </div>
     );
+  }
+
+  if (status === "finished") {
+    if (completionStatus === "incomplete") {
+      return (
+        <div className={cn("text-xs font-medium text-text-muted", className)}>
+          Circle incomplete
+        </div>
+      );
+    }
+    if (completionStatus === "close") {
+      return (
+        <div className={cn("text-xs font-medium text-yellow-600", className)}>
+          So close!
+        </div>
+      );
+    }
   }
 
   if (score === null && status === "drawing") return null;

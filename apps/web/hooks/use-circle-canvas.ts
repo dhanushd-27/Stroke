@@ -1,34 +1,38 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
+import {
+  getDistance,
+  getAngle,
+  getAngleDiff,
+  calculatePrecision,
+  Point,
+} from "../utils/canvas-math";
+import {
+  MIN_POINTS_TO_STOP,
+  PROXIMITY_THRESHOLD,
+  MIN_DISTANCE_THRESHOLD,
+} from "../utils/canvas-constants";
+import { checkBacktracking, checkAxisStop } from "../utils/circle-engine";
+import { useCanvasScale } from "./use-canvas-scale";
+import { useCanvasRender } from "./use-canvas-render";
 
-export type Point = {
-  x: number;
-  y: number;
-};
-
+export type { Point };
 export type GameStatus = "idle" | "drawing" | "finished";
-
-const MIN_POINTS_TO_STOP = 50; // minimum points before we allow axis stop
-const PROXIMITY_THRESHOLD = 30; // distance from center to show warning
-const AXIS_STOP_THRESHOLD = 0.05; // radians (small angle)
-const DIRECTION_SETTLE_POINTS = 10; // points needed to determine direction
-const MIN_DISTANCE_THRESHOLD = 4; // pixels between points
-const OVERLAP_THRESHOLD = 20; // distance to detect crossing own path
-const OVERLAP_SKIP_POINTS = 20; // number of recent points to skip for overlap check
+export type CompletionStatus = "incomplete" | "close" | "success" | null;
 
 export function useCircleCanvas() {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const requestRef = useRef<number | null>(null);
+  const { canvasRef, containerRef, canvasSize } = useCanvasScale();
+
   const pressPositionRef = useRef<Point | null>(null);
   const lastAngleRef = useRef<number | null>(null);
-  const drawingDirectionRef = useRef<number>(0); // 1 for CW, -1 for CCW, 0 for unknown
+  const drawingDirectionRef = useRef<number>(0);
 
   const [points, setPoints] = useState<Point[]>([]);
   const [status, setStatus] = useState<GameStatus>("idle");
+  const [completionStatus, setCompletionStatus] =
+    useState<CompletionStatus>(null);
   const [score, setScore] = useState<number | null>(null);
-  const [canvasSize, setCanvasSize] = useState({ width: 0, height: 0 });
   const [isTooClose, setIsTooClose] = useState(false);
   const [startAngle, setStartAngle] = useState<number | null>(null);
 
@@ -40,7 +44,6 @@ export function useCircleCanvas() {
     [canvasSize],
   );
 
-  // Sharp rendering helper
   const draw = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -56,13 +59,11 @@ export function useCircleCanvas() {
     const primaryColor =
       style.getPropertyValue("--color-text-primary").trim() || "#131313";
 
-    // 1. Draw center dot
     ctx.beginPath();
     ctx.arc(cx, cy, 2, 0, Math.PI * 2);
     ctx.fillStyle = mutedColor;
     ctx.fill();
 
-    // 2. Draw user path
     if (points.length >= 4 && points[0]) {
       ctx.strokeStyle = primaryColor;
       ctx.lineWidth = 2;
@@ -77,86 +78,35 @@ export function useCircleCanvas() {
       }
       ctx.stroke();
     }
-  }, [canvasSize, getCenter, points]);
+  }, [getCenter, points, canvasRef, canvasSize.width, canvasSize.height]);
 
-  // Animation Loop
-  useEffect(() => {
-    requestRef.current = requestAnimationFrame(draw);
-    return () => {
-      if (requestRef.current) cancelAnimationFrame(requestRef.current);
-    };
-  }, [draw]);
-
-  // Responsive logic
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    const resizeObserver = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        const { width, height } = entry.contentRect;
-        setCanvasSize({ width, height });
-
-        const canvas = canvasRef.current;
-        if (canvas) {
-          const dpr = window.devicePixelRatio || 1;
-          canvas.width = width * dpr;
-          canvas.height = height * dpr;
-          const ctx = canvas.getContext("2d");
-          if (ctx) {
-            ctx.scale(dpr, dpr);
-          }
-        }
-      }
-    });
-
-    resizeObserver.observe(container);
-    return () => resizeObserver.disconnect();
-  }, []);
-
-  const calculatePrecision = useCallback(
-    (pts: Point[]) => {
-      if (pts.length < 10) return null;
-
-      const { cx, cy } = getCenter();
-      const distances = pts.map((p) => Math.hypot(p.x - cx, p.y - cy));
-      const meanRadius =
-        distances.reduce((a, b) => a + b, 0) / distances.length;
-      const variance =
-        distances.reduce((sum, d) => sum + Math.pow(d - meanRadius, 2), 0) /
-        distances.length;
-      const stdDev = Math.sqrt(variance);
-      const normalized = Math.max(0, 1 - stdDev / meanRadius);
-      return Math.round(normalized * 100);
-    },
-    [getCenter],
-  );
+  useCanvasRender(draw, [draw]);
 
   const startDrawing = useCallback(
     (e: React.PointerEvent<HTMLCanvasElement>) => {
       const rect = e.currentTarget.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
-      const { cx, cy } = getCenter();
-      const distFromCenter = Math.hypot(x - cx, y - cy);
+      const center = getCenter();
+      const distFromCenter = getDistance(
+        { x, y },
+        { x: center.cx, y: center.cy },
+      );
 
       setIsTooClose(distFromCenter < PROXIMITY_THRESHOLD);
-
-      // Rule: User should not be able to draw when too near to the center
-      if (distFromCenter < PROXIMITY_THRESHOLD) {
-        return;
-      }
+      if (distFromCenter < PROXIMITY_THRESHOLD) return;
 
       if (status === "finished") {
         setPoints([]);
         setScore(null);
         setStatus("idle");
+        setCompletionStatus(null);
         setStartAngle(null);
         lastAngleRef.current = null;
         drawingDirectionRef.current = 0;
       }
 
-      const angle = Math.atan2(y - cy, x - cx);
+      const angle = getAngle({ x, y }, center);
       setStartAngle(angle);
       pressPositionRef.current = { x, y };
     },
@@ -164,110 +114,116 @@ export function useCircleCanvas() {
   );
 
   const stopDrawing = useCallback(() => {
-    if (status === "drawing") {
-      setStatus("finished");
+    if (status !== "drawing") return;
+    setStatus("finished");
+
+    if (startAngle !== null && points.length > MIN_POINTS_TO_STOP) {
+      const lastPoint = points[points.length - 1];
+      if (lastPoint) {
+        const startPoint = points[0];
+        const center = getCenter();
+        const distToStart = startPoint
+          ? getDistance(lastPoint, startPoint)
+          : Infinity;
+        const currentAngle = getAngle(lastPoint, center);
+        const angleDiff = getAngleDiff(currentAngle, startAngle);
+
+        if (distToStart < 20 || angleDiff < 0.15) {
+          setCompletionStatus("success");
+          if (startPoint && distToStart < 55) {
+            setPoints((prev) => [...prev, startPoint]);
+          }
+        } else if (angleDiff < 0.3) {
+          setCompletionStatus("close");
+        } else {
+          setCompletionStatus("incomplete");
+        }
+      }
+    } else {
+      setCompletionStatus("incomplete");
     }
-  }, [status]);
+  }, [status, startAngle, points, getCenter]);
 
   const handlePointerMove = useCallback(
     (e: React.PointerEvent<HTMLCanvasElement>) => {
       const rect = e.currentTarget.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
-      const { cx, cy } = getCenter();
-      const distFromCenter = Math.hypot(x - cx, y - cy);
+      const center = getCenter();
+      const currentPoint = { x, y };
+      const distFromCenter = getDistance(currentPoint, {
+        x: center.cx,
+        y: center.cy,
+      });
 
-      // Proximity Warning
       setIsTooClose(distFromCenter < PROXIMITY_THRESHOLD);
 
       if (e.buttons !== 1 || status === "finished") return;
 
       if (status === "idle") {
-        // Re-check proximity before starting
         if (distFromCenter < PROXIMITY_THRESHOLD) return;
-
-        const startPoint = pressPositionRef.current || { x, y };
-        setPoints([startPoint, { x, y }]);
+        const startPoint = pressPositionRef.current || currentPoint;
+        setPoints([startPoint, currentPoint]);
         setStatus("drawing");
-
-        const angle = Math.atan2(startPoint.y - cy, startPoint.x - cx);
-        if (startAngle === null) {
-          setStartAngle(angle);
-        }
+        const angle = getAngle(startPoint, center);
+        if (startAngle === null) setStartAngle(angle);
         lastAngleRef.current = angle;
         return;
       }
 
       if (status === "drawing") {
         const lastPoint = points[points.length - 1];
-        if (lastPoint) {
-          const distFromLast = Math.hypot(x - lastPoint.x, y - lastPoint.y);
-          if (distFromLast < MIN_DISTANCE_THRESHOLD) return;
-        }
+        if (
+          lastPoint &&
+          getDistance(currentPoint, lastPoint) < MIN_DISTANCE_THRESHOLD
+        )
+          return;
 
-        const newPoints = [...points, { x, y }];
-        const currentAngle = Math.atan2(y - cy, x - cx);
+        const newPoints = [...points, currentPoint];
+        const currentAngle = getAngle(currentPoint, center);
 
         if (lastAngleRef.current !== null) {
-          // Calculate shortest angle difference to detect direction and backtracking
-          let delta = currentAngle - lastAngleRef.current;
-          if (delta > Math.PI) delta -= 2 * Math.PI;
-          if (delta < -Math.PI) delta += 2 * Math.PI;
+          const { isReversing, delta } = checkBacktracking(
+            currentAngle,
+            lastAngleRef.current,
+            drawingDirectionRef.current,
+            points.length,
+          );
 
-          // Determine direction after a few points
-          if (
-            drawingDirectionRef.current === 0 &&
-            points.length > DIRECTION_SETTLE_POINTS
-          ) {
+          if (drawingDirectionRef.current === 0 && points.length > 10) {
             drawingDirectionRef.current = delta > 0 ? 1 : -1;
           }
 
-          // 🛑 Backtracking detection
-          if (drawingDirectionRef.current !== 0) {
-            const isReversing =
-              drawingDirectionRef.current === 1 ? delta < -0.05 : delta > 0.05;
-            if (isReversing) {
-              setStatus("finished");
-              return;
-            }
-          }
-        }
-
-        lastAngleRef.current = currentAngle;
-
-        // 🛑 Overlap detection (crossing own path)
-        if (newPoints.length > OVERLAP_SKIP_POINTS) {
-          for (let i = 0; i < newPoints.length - OVERLAP_SKIP_POINTS; i++) {
-            const p = newPoints[i];
-            if (p) {
-              const dist = Math.hypot(x - p.x, y - p.y);
-              if (dist < OVERLAP_THRESHOLD) {
-                setPoints(newPoints);
-                setStatus("finished");
-                return;
-              }
-            }
-          }
-        }
-
-        // Auto-stop logic: Crossing the target axis (startAngle)
-        if (newPoints.length > MIN_POINTS_TO_STOP && startAngle !== null) {
-          let angleDiff = Math.abs(currentAngle - startAngle);
-          if (angleDiff > Math.PI) angleDiff = 2 * Math.PI - angleDiff;
-
-          if (angleDiff < AXIS_STOP_THRESHOLD) {
-            setPoints(newPoints);
+          const distToStart = points[0]
+            ? getDistance(currentPoint, points[0])
+            : Infinity;
+          if (isReversing && distToStart > 30) {
             setStatus("finished");
             return;
           }
         }
 
+        lastAngleRef.current = currentAngle;
+
+        if (newPoints.length > MIN_POINTS_TO_STOP && startAngle !== null) {
+          if (checkAxisStop(currentAngle, startAngle)) {
+            const distToStart = newPoints[0]
+              ? getDistance(currentPoint, newPoints[0])
+              : Infinity;
+            if (newPoints[0] && distToStart < 5) newPoints.push(newPoints[0]);
+            setPoints(newPoints);
+            setStatus("finished");
+            setCompletionStatus("success");
+            return;
+          }
+        }
+
         setPoints(newPoints);
-        const newScore = calculatePrecision(newPoints);
+        const newScore = calculatePrecision(newPoints, center);
         if (newScore !== null) setScore(newScore);
       }
     },
-    [status, points, getCenter, calculatePrecision, startAngle],
+    [status, points, getCenter, startAngle],
   );
 
   return {
@@ -275,6 +231,7 @@ export function useCircleCanvas() {
     containerRef,
     score,
     status,
+    completionStatus,
     isTooClose,
     startDrawing,
     stopDrawing,

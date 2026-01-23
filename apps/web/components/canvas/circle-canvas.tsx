@@ -11,6 +11,7 @@ export default function CircleCanvas() {
     containerRef,
     score,
     status,
+    completionStatus,
     isTooClose,
     startDrawing,
     stopDrawing,
@@ -23,6 +24,7 @@ export default function CircleCanvas() {
         <PrecisionIndicator
           score={score}
           status={status}
+          completionStatus={completionStatus}
           isTooClose={isTooClose}
         />
       </div>
