@@ -19,6 +19,7 @@ import {
 } from "../../utils/circle/circle-engine";
 import { useCanvasScale } from "../use-canvas-scale";
 import { useCanvasRender } from "../use-canvas-render";
+import { useCurrentShapeStore } from "../../stores/currentShape-store";
 
 export type { Point };
 export type GameStatus = "idle" | "drawing" | "finished";
@@ -35,7 +36,7 @@ export function useCircleCanvas() {
   const [status, setStatus] = useState<GameStatus>("idle");
   const [completionStatus, setCompletionStatus] =
     useState<CompletionStatus>(null);
-  const [score, setScore] = useState<number | null>(null);
+  const { score, setScore } = useCurrentShapeStore();
   const [isTooClose, setIsTooClose] = useState(false);
   const [startAngle, setStartAngle] = useState<number | null>(null);
 

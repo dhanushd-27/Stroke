@@ -2,7 +2,7 @@
 
 import { useCircleCanvas } from "../../hooks/circle/use-circle-canvas";
 import { PrecisionIndicator } from "./precision-indicator";
-import { ShareActions } from "./share-actions";
+import { ShareActions } from "../share-actions";
 import { DrawingCanvas } from "../canvas/drawing-canvas";
 
 export default function CircleCanvas() {
@@ -43,7 +43,7 @@ export default function CircleCanvas() {
       </div>
 
       <div className="h-10 flex items-center justify-center">
-        {status === "finished" && <ShareActions score={score} />}
+        {status === "finished" && <ShareActions />}
       </div>
     </div>
   );
