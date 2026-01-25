@@ -162,7 +162,6 @@ export function useTriangleCanvas() {
           // Split the edge here for scoring purposes, but don't add the snap vertex to the drawing path
           // The user's path is 'currentEdge' which leads "close enough" to the vertex.
 
-          console.log("Vertex locked:", snap.index);
           setVisitedVertices((prev) => [...prev, snap.index]);
 
           // We archive the current edge as a completed segment
