@@ -10,6 +10,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://stroke.dhanush.tech"),
   title: "Stroke",
   description: "Can you draw a perfect circle?",
   openGraph: {
