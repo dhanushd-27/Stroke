@@ -1,7 +1,7 @@
 @import "@repo/tailwind-config";
 
 .base-style {
-  @apply inline-flex items-center justify-center rounded-lg px-7 py-2.5 font-normal transition-colors focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-40 cursor-pointer text-sm;
+  @apply inline-flex items-center justify-center rounded-md md:rounded-lg px-4 py-1.5 md:px-7 md:py-2.5 font-normal transition-colors focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-40 cursor-pointer text-xs md:text-sm;
 }
 
 .contained {
@@ -17,7 +17,7 @@
 }
 
 .icon-button-base {
-  @apply inline-flex items-center justify-center rounded-lg transition-colors focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-50 cursor-pointer aspect-square px-2 py-2;
+  @apply inline-flex items-center justify-center rounded-md md:rounded-lg transition-colors focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-50 cursor-pointer aspect-square p-1.5 md:p-2;
 }
 
 .link {

@@ -8,7 +8,7 @@ export default function CanvasNav() {
 
   return (
     <div className='flex flex-col items-center justify-center gap-4'>
-      <h4>
+      <h4 className='text-xs sm:text-sm md:text-base lg:text-lg w-44 sm:w-max text-center'>
         Choose a shape you want to stroke
       </h4>
       <div className='flex gap-4'>
