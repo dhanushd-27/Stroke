@@ -4,6 +4,8 @@ import { useCircleCanvas } from "../../hooks/circle/use-circle-canvas";
 import { PrecisionIndicator } from "./precision-indicator";
 import { ShareActions } from "../share-actions";
 import { DrawingCanvas } from "../canvas/drawing-canvas";
+import { Button } from "@repo/ui/button";
+import { Shape, useCurrentShapeStore } from "../../stores/currentShape-store";
 
 export default function CircleCanvas() {
   const {
@@ -17,6 +19,8 @@ export default function CircleCanvas() {
     stopDrawing,
     handlePointerMove,
   } = useCircleCanvas();
+
+  const setShape = useCurrentShapeStore((state) => state.setShape);
 
   return (
     <div className="flex flex-col items-center gap-4 w-full">
@@ -43,7 +47,15 @@ export default function CircleCanvas() {
       </div>
 
       <div className="h-10 flex items-center justify-center">
-        {status === "finished" && <ShareActions />}
+        {completionStatus === "success" ? (
+          <ShareActions />
+        ) : (
+          (status === "idle" || completionStatus === "incomplete") && (
+            <Button variant="text" onClick={() => setShape(Shape.None)}>
+              Back
+            </Button>
+          )
+        )}
       </div>
     </div>
   );

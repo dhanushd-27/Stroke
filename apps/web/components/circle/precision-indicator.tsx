@@ -41,7 +41,7 @@ export function PrecisionIndicator({
     if (completionStatus === "incomplete") {
       return (
         <div className={cn("text-xs font-medium text-text-muted", className)}>
-          Circle incomplete
+          Circle incomplete, Try Again!
         </div>
       );
     }
