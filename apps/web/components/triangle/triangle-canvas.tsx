@@ -4,7 +4,6 @@ import { useTriangleCanvas } from "../../hooks/triangle/use-triangle-canvas";
 import { PrecisionIndicator } from "./precision-indicator";
 import { ShareActions } from "../share-actions";
 import { DrawingCanvas } from "../canvas/drawing-canvas";
-import { Button } from "@repo/ui/button";
 import { Shape, useCurrentShapeStore } from "../../stores/currentShape-store";
 
 export default function TriangleCanvas() {
@@ -44,15 +43,7 @@ export default function TriangleCanvas() {
       </div>
 
       <div className="h-10 flex items-center justify-center">
-        {completionStatus === "success" ? (
-          <ShareActions />
-        ) : (
-          (status === "idle" || completionStatus === "incomplete") && (
-            <Button variant="text" onClick={() => setShape(Shape.None)}>
-              Back
-            </Button>
-          )
-        )}
+        {completionStatus === "success" && <ShareActions />}
       </div>
     </div>
   );
